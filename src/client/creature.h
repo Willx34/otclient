@@ -148,6 +148,7 @@ public:
 
     bool isPassable() const { return m_passable; }
     bool isWalking() { return m_walking; }
+
     bool isRemoved() { return m_removed; }
     bool isInvisible() { return m_outfit.isEffect() && m_outfit.getAuxId() == 13; }
     bool isDead() { return m_healthPercent <= 0; }
@@ -194,6 +195,7 @@ protected:
     void onPositionChange(const Position& newPos, const Position& oldPos) override;
 
     bool m_walking{ false };
+
     Point m_walkOffset;
     Otc::Direction m_direction{ Otc::South };
 
@@ -205,7 +207,6 @@ private:
     void updateShield();
     void updateWalkingTile();
     void updateWalkAnimation();
-    void resetWalkAnimationPhase(bool toSchedule = false);
 
     uint16_t getCurrentAnimationPhase(bool mount = false);
 
@@ -232,7 +233,7 @@ private:
     TexturePtr m_iconTexture;
     TexturePtr m_typingIconTexture;
 
-    ScheduledEventPtr m_walkUpdateEvent;
+    EventPtr m_walkUpdateEvent;
     ScheduledEventPtr m_walkFinishAnimEvent;
     ScheduledEventPtr m_outfitColorUpdateEvent;
 

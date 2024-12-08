@@ -175,11 +175,6 @@ function Cyclopedia.applyFilters()
 end
 
 function Cyclopedia.internalCreateItem(data)
-    -- temp fix 13.40
-    if data:getId() > 47381 and data:getId() < 80909 then
-        return
-    end
-
     local player = g_game.getLocalPlayer()
     local vocation = player:getVocation()
     local level = player:getLevel()
@@ -224,16 +219,11 @@ function Cyclopedia.internalCreateItem(data)
     item:setId(data:getId())
     item.Sprite:setItemId(data:getId())
     item.Name:setText(marketData.name)
+    local price = data:getMeanPrice()
 
-    local price, rarity = ItemsDatabase.getSellValueAndColor(data:getId())
     item.Value = price
     item.Vocation = marketData.restrictVocation
-
-    if price > 0 then
-        item.Rarity:setImageSource("/images/ui/rarity_" .. rarity)
-    end
-
-    ItemsDatabase.setRarityItem(item.Sprite, item)
+    ItemsDatabase.setRarityItem(item.Sprite, item.Sprite:getItem())
 
     function item.onClick(widget)
         UI.InfoBase.SellBase.List:destroyChildren()
@@ -260,8 +250,8 @@ function Cyclopedia.internalCreateItem(data)
         UI.SelectedItem.Sprite:setItemId(data:getId())
 
         if price > 0 then
-            UI.InfoBase.ResultGoldBase.Rarity:setImageSource("/images/ui/rarity_" .. rarity)
-            UI.SelectedItem.Rarity:setImageSource("/images/ui/rarity_" .. rarity)
+            ItemsDatabase.setRarityItem(UI.SelectedItem.Rarity, price)
+            ItemsDatabase.setRarityItem(UI.InfoBase.ResultGoldBase.Rarity, price)
         else
             UI.InfoBase.ResultGoldBase.Rarity:setImageSource("")
             UI.SelectedItem.Rarity:setImageSource("")
@@ -277,7 +267,7 @@ function Cyclopedia.internalCreateItem(data)
             end
         end
 
-        --[[  local buy, sell = Cyclopedia.formatSaleData(internalData:getNpcSaleData())
+         local buy, sell = Cyclopedia.formatSaleData(internalData:getNpcSaleData())
         local sellColor = "#484848"
 
         for index, value in ipairs(sell) do
@@ -318,7 +308,7 @@ function Cyclopedia.internalCreateItem(data)
             end
 
             buyColor = buyColor == "#484848" and "#414141" or "#484848"
-        end ]]
+        end 
 
         UI.selectItem = widget
     end

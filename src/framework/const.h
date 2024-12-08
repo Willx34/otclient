@@ -38,6 +38,8 @@
 #define BUILD_ARCH "x86"
 #elif defined(__arm__)
 #define BUILD_ARCH "ARM"
+#elif defined(__EMSCRIPTEN__)
+#define BUILD_ARCH "WASM32"
 #else
 #define BUILD_ARCH "unknown"
 #endif
@@ -147,6 +149,7 @@ namespace Fw
         KeyBar = 124,         // |
         KeyRightCurly = 125,  // }
         KeyTilde = 126,       // ~
+        KeyDel = 127,       // DEL (Ctrl + Backspace)
         KeyF1 = 128,
         KeyF2 = 129,
         KeyF3 = 130,

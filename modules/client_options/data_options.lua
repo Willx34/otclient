@@ -25,12 +25,6 @@ return {
     },
     classicControl                    = false,
     smartWalk                         = false,
-    preciseControl                    = {
-        value = false,
-        action = function(value, options, controller, panels, extraWidgets)
-            g_game.setScheduleLastWalk(not value)
-        end
-    },
     autoChaseOverride                 = true,
     moveStack                         = false,
     showStatusMessagesInConsole       = true,
@@ -154,6 +148,23 @@ return {
         value = true,
         action = function(value, options, controller, panels, extraWidgets)
             g_app.setDrawTexts(value)
+        end
+    },
+    walkFirstStepDelay                = {
+        value = 250,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.generalPanel:recursiveGetChildById('walkFirstStepDelay'):setText(string.format(
+                'Walk Delay after first step: %sms', value))
+            g_game.setWalkFirstStepDelay(value)
+        end
+    },
+    walkTurnDelay                     = {
+        value = 100,
+        action = function(value, options, controller, panels, extraWidgets)
+            panels.generalPanel:recursiveGetChildById('walkTurnDelay'):setText(string.format(
+                'Walk delay after turn: %sms',
+                value))
+            g_game.setWalkTurnDelay(value)
         end
     },
     turnDelay                         = {
@@ -387,5 +398,50 @@ return {
     },
     profile                           = {
         value = 1,
-    }
+    },
+    showExpiryInInvetory           = {
+        value = true,
+        event = nil,
+        action = function(value, options, controller, panels, extraWidgets)
+            if options.showExpiryInContainers.event ~= nil then
+                removeEvent(options.showExpiryInInvetory.event)
+            end
+            options.showExpiryInInvetory.event = scheduleEvent(function()
+                modules.game_inventory.reloadInventory()
+                options.showExpiryInInvetory.event = nil
+            end, 100)
+        end
+    },
+    showExpiryInContainers           = {
+        value = true,
+        event = nil,
+        action = function(value, options, controller, panels, extraWidgets)
+            if options.showExpiryInContainers.event ~= nil then
+                removeEvent(options.showExpiryInContainers.event)
+            end
+            options.showExpiryInContainers.event = scheduleEvent(function()
+                modules.game_containers.reloadContainers()
+                options.showExpiryInContainers.event = nil
+            end, 100)
+        end
+    },
+    showExpiryOnUnusedItems           = true,
+    framesRarity                      = {
+        value = 'frames',
+        event = nil,
+        action = function(value, options, controller, panels, extraWidgets)
+            local newValue = value
+            if newValue == 'None' then
+                newValue = nil
+            end
+            panels.interface:recursiveGetChildById('frames'):setCurrentOptionByData(newValue, true)
+            if options.framesRarity.event ~= nil then
+                removeEvent(options.framesRarity.event)
+            end
+            options.framesRarity.event = scheduleEvent(function()
+                modules.game_containers.reloadContainers()
+                options.framesRarity.event = nil
+            end, 100)
+        end
+    },
 }

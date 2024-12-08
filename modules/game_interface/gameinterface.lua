@@ -25,14 +25,12 @@ limitedZoom = false
 currentViewMode = 0
 smartWalkDirs = {}
 smartWalkDir = nil
-firstStep = false
 leftIncreaseSidePanels = nil
 leftDecreaseSidePanels = nil
 rightIncreaseSidePanels = nil
 rightDecreaseSidePanels = nil
 hookedMenuOptions = {}
 lastDirTime = g_clock.millis()
-lastManualWalk = 0
 
 function init()
     g_ui.importStyle('styles/countwindow')
@@ -132,7 +130,7 @@ function init()
 end
 
 function bindKeys()
-    gameRootPanel:setAutoRepeatDelay(200)
+    gameRootPanel:setAutoRepeatDelay(50)
 
     bindWalkKey('Up', North)
     bindWalkKey('Right', East)
@@ -189,12 +187,16 @@ function bindWalkKey(key, dir)
     g_keyboard.bindKeyPress(key, function()
         smartWalk(dir)
     end, gameRootPanel)
+
+    g_keyboard.setKeyDelay(key, 10)
 end
 
 function unbindWalkKey(key)
     g_keyboard.unbindKeyDown(key, gameRootPanel)
     g_keyboard.unbindKeyUp(key, gameRootPanel)
     g_keyboard.unbindKeyPress(key, gameRootPanel)
+
+    g_keyboard.setKeyDelay(key, 30)
 end
 
 function bindTurnKey(key, dir)
@@ -455,7 +457,6 @@ function onWalkKeyDown(dir)
             g_game.setChaseMode(DontChase)
         end
     end
-    firstStep = true
     changeWalkDir(dir)
 end
 
@@ -496,10 +497,8 @@ function smartWalk(dir)
         return false
     end
 
-    local dire = smartWalkDir or dir
-    g_game.walk(dire, firstStep)
-    firstStep = false
-    lastManualWalk = g_clock.millis()
+    g_game.walk(smartWalkDir or dir)
+
     return true
 end
 
