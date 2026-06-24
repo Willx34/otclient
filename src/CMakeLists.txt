@@ -685,7 +685,7 @@ else() # Linux
 		protobuf::libprotobuf protobuf
 		absl::log_internal_check_op
 		Threads::Threads
-		X11::X11
+		$<$<BOOL:${X11_FOUND}>:X11::X11>
 		asio::asio
 		OpenAL::OpenAL
 		LibLZMA::LibLZMA

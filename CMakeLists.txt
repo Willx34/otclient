@@ -31,6 +31,10 @@ endif()
 # *****************************************************************************
 project(otclient)
 
+# Allow Clang 18 with the newer MSVC STL headers (skip the compiler-version assert).
+# Added via add_compile_definitions so it does not clobber default flags like /EHsc.
+add_compile_definitions(_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH)
+
 # *****************************************************************************
 # Append cmake search path
 # *****************************************************************************
